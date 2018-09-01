@@ -1,0 +1,22 @@
+select s.team_desc, s.app_name, round(avg(score), 2) as final_score
+from (
+select j.j_lname, t.team_desc, a.app_name, (((asr.correct_working/10)*30)+((asr.technical_difficulty/10)*30)+((asr.creativity/10)*25))/85*100 AS score
+from team t join app a using (app_id)
+join app_score asr using (app_id)
+join judge j using (judge_id) 
+where asr.judge_id =1
+union all
+select j.j_lname, t.team_desc, a.app_name, (((asr.correct_working/10)*30)+((asr.technical_difficulty/10)*30)+((asr.creativity/10)*25))/85*100 AS score
+from team t join app a using (app_id)
+join app_score asr using (app_id)
+join judge j using (judge_id) 
+where asr.judge_id =2
+union all
+select j.j_lname, t.team_desc, a.app_name, (((asr.correct_working/10)*30)+((asr.technical_difficulty/10)*30)+((asr.creativity/10)*25))/85*100 AS score
+from team t join app a using (app_id)
+join app_score asr using (app_id)
+join judge j using (judge_id) 
+where asr.judge_id =3
+) as s
+group by s.team_desc
+order by final_score desc;
